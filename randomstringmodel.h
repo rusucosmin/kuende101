@@ -37,7 +37,7 @@ signals:
 
 private:
     QList<QString> m_data;
-    QString getRandomString();
+    QString getRandomString(int start, int end);
     QTimer *timer;
 };
 

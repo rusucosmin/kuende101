@@ -2,6 +2,7 @@ import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Dialogs 1.2
 import QtQuick.Controls.Styles 1.4
+import QtGraphicalEffects 1.0
 import com.kuende.cosmin.kuende101 1.0
 
 ApplicationWindow {
@@ -14,9 +15,6 @@ ApplicationWindow {
         id: mainForm
         anchors.fill: parent
 
-        RandomStringModel {
-            id: randomStringModel;
-        }
 
         TabView {
             id: tabView
@@ -30,23 +28,12 @@ ApplicationWindow {
                 anchors.fill: parent;
                 ListView {
                     id: redditPostListView
-                    model: ListModel {
-                        ListElement { text: "element0" }
-                        ListElement { text: "element1" }
-                        ListElement { text: "element2" }
-                        ListElement { text: "element3" }
-                        ListElement { text: "element4" }
-                        ListElement { text: "element5" }
-                        ListElement { text: "element6" }
-                        ListElement { text: "element7" }
-                        ListElement { text: "element8" }
-                        ListElement { text: "element9" }
-                        ListElement { text: "element10" }
-                        ListElement { text: "element11" }
-                        ListElement { text: "element12" }
-                        ListElement { text: "element13" }
+                    model: RedditPostModel {
+                        id: redditPostModel
                     }
                     delegate: Item {
+                        Image {
+                        }
                         Text {
                             id: text
                             text: model.text
@@ -58,7 +45,6 @@ ApplicationWindow {
                             anchors.fill: parent
                             onClicked: {
                                 redditPostListView.currentIndex = index;
-                                console.log("tocmai ai atins: " + index);
                             }
                         }
                         width: parent.width
@@ -76,12 +62,15 @@ ApplicationWindow {
                 title: "C++ List"
                 ListView {
                     id: randomStringListView
-                    model: randomStringModel
+                    model: RandomStringModel {
+                        id: randomStringModel;
+                    }
+
                     delegate: Rectangle {
                         id: wrapper
-                        border.width: 1
+                        border.width: 2
                         border.color: 'grey'
-                        color: randomStringListView.currentIndex == index ? 'lightsteelblue' : 'white'
+                        color: randomStringListView.currentIndex == index ? '#4283f4' : 'white'
                         Text {
                             id: random_text
                             font.pointSize: 20
@@ -94,32 +83,144 @@ ApplicationWindow {
                             anchors.fill:parent
                             onClicked: {
                                 randomStringListView.currentIndex = index
-                                console.log("you just clicked " + index);
                             }
                         }
                         width: parent.width
                         height: random_text.height;
                     }
-                    highlight: Rectangle {
-                        anchors.fill: parent;
-                        color: "lightsteelblue"
-                    }
                     highlightMoveDuration: 20
                     focus: false;
+                    currentIndex: -1
                 }
             }
             Tab {
                 id: moveTab;
                 title: "Move"
-                Rectangle {
-                    color: "blue"
+                DropArea {
+                    Button {
+                        id: control
+                        x: Math.random() * (parent.width - 400)
+                        y: Math.random() * (parent.height - 400)
+                        width: 400
+                        height: 400
+
+                        Drag.active: dragArea.drag.active
+                        Drag.hotSpot.x: 10
+                        Drag.hotSpot.y: 10
+
+                        MouseArea {
+                            id: dragArea
+                            anchors.fill: parent
+                            drag.target: parent
+                        }
+
+                        style: ButtonStyle {
+                            background: Rectangle {
+                                border.width: control.activeFocus ? 1 : 2
+                                border.color: "blue"
+                                radius: width * 0.5
+                                gradient: Gradient {
+                                    GradientStop { position: 0.0; color: control.pressed ? "#eee" : "red" }
+                                    GradientStop { position: 0.5; color: control.pressed ? "#ccc" : "yellow" }
+                                }
+                            }
+                        }
+                    }
                 }
             }
             Tab {
-                id: animationTab;
+                id: animationTab
                 title: "Animation"
                 Rectangle {
-                    color: "red"
+                    Rectangle {
+                        id: square
+                        x: 250
+                        y: 250
+                        width: 400
+                        height: 400
+                        color: "yellow"
+                        border.width: 10
+                        border.color: 'red'
+                        Behavior on width {
+                            NumberAnimation {
+                                duration: 500
+                            }
+                        }
+                        Behavior on height {
+                            NumberAnimation {
+                                duration: 500
+                            }
+                        }
+                        Behavior on x {
+                            NumberAnimation {
+                                duration: 500
+                            }
+                        }
+                        Behavior on y {
+                            NumberAnimation {
+                                duration: 500
+                            }
+                        }
+                        Behavior on color {
+                            ColorAnimation {
+                                duration: 500
+                            }
+                        }
+                    }
+                    Row {
+                        anchors.bottom: parent.bottom;
+                        anchors.horizontalCenter: parent
+                        Button {
+                            id: moveButton
+                            focus: false
+                            text: "Move"
+                            onClicked: moveSquare()
+                        }
+                        Button {
+                            id: colorBtn
+                            focus: false
+                            text: "Color"
+                            onClicked: colorSquare()
+                        }
+                        Button {
+                            id: sizeBtn
+                            focus: false
+                            text: "Size"
+                            onClicked: sizeSquare()
+                        }
+                        Button {
+                            id: resetBtn
+                            focus: false
+                            text: "Reset"
+                            onClicked: resetSquare()
+                        }
+                    }
+
+                    function moveSquare() {
+                        square.x = Math.random() * (square.parent.width - square.width);
+                        square.y = Math.random() * (square.parent.height- square.height);
+                    }
+                    function colorSquare() {
+                        /// TODO: indeed check if the chosen color does not equal the current color :)
+                        var colArr = ['red', 'yellow', 'blue', 'black', '#123456', 'green']
+                        var aux = Math.floor(Math.random() * colArr.length)
+                        console.log(colArr);
+                        console.log(colArr[aux])
+                        console.log(aux)
+                        square.color = colArr[aux]
+                    }
+                    function sizeSquare() {
+                        square.width += 50
+                        square.height += 50
+                    }
+
+                    function resetSquare() {
+                        square.x = 250;
+                        square.y = 250;
+                        square.width = 400;
+                        square.height = 400;
+                        square.color = "yellow"
+                    }
                 }
             }
         }

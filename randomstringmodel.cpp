@@ -78,19 +78,17 @@ int RandomStringModel::count() {
     return m_data.count();
 }
 
-QString RandomStringModel::getRandomString() {
+QString RandomStringModel::getRandomString(int st, int dr) {
     static const QString chSet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
     QString s;
-    int sz = 10 + qrand() % (1000 - 10 + 1);
+    int sz = st + qrand() % (dr - st + 1);
     for(int i = 0; i < sz; ++ i) {
         int act = qrand() % chSet.size();
         s.append(chSet.at(act));
-        //if(qrand() % 20 == 0)
-        //    s.append(QChar(' '));
     }
     return s;
 }
 
 void RandomStringModel::append_random_string() {
-    append(getRandomString());
+    append(getRandomString(10, 300));
 }
