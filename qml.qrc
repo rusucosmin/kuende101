@@ -4,5 +4,6 @@
         <file>MainForm.ui.qml</file>
         <file>img/circle.png</file>
         <file>img/simple_list.png</file>
+        <file>img/loading.gif</file>
     </qresource>
 </RCC>

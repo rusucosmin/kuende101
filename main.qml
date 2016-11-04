@@ -4,6 +4,8 @@ import QtQuick.Dialogs 1.2
 import QtQuick.Controls.Styles 1.4
 import QtGraphicalEffects 1.0
 import com.kuende.cosmin.kuende101 1.0
+import QtQuick.Window 2.2
+import QtQuick.Layouts 1.2
 
 ApplicationWindow {
     visible: true
@@ -19,36 +21,73 @@ ApplicationWindow {
         TabView {
             id: tabView
             anchors.fill: parent
-            anchors.margins: 10
             tabPosition: Qt.BottomEdge
 
             Tab {
                 id: redditPostTab;
                 title: "List"
                 anchors.fill: parent;
+                anchors.margins: 10
                 ListView {
                     id: redditPostListView
-                    model: RedditPostModel {
-                        id: redditPostModel
-                    }
-                    delegate: Item {
+                    model: RedditPostModel {}
+                    delegate: Rectangle {
+                        width: parent.width;
+                        height: width / 4 + upvotes.height + 20
+                        property real imgheight: width / 4
+                        anchors.margins: 10
                         Image {
-                        }
-                        Text {
-                            id: text
-                            text: model.text
-                            font.pointSize: 50
-                            anchors.centerIn: parent
+                            id: img
+                            height: parent.imgheight
+                            width: parent.imgheight
+                            anchors.left: parent.left;
+                            anchors.top: parent.top
                             anchors.margins: 10
-                        }
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: {
-                                redditPostListView.currentIndex = index;
+                            fillMode: Image.PreserveAspectCrop
+                            source: model.imageUrl
+                            onStatusChanged:
+                                if (img.status == Image.Ready)
+                                    loadingImg.visible = false;
+                            Image {
+                                id: loadingImg
+                                anchors.fill: parent;
+                                source: 'img/loading.gif'
                             }
                         }
-                        width: parent.width
-                        height: text.height;
+                        Text {
+                            id: upvotes
+                            text: model.upvotes
+                            anchors.margins: 10
+                            anchors.top: img.bottom
+                            anchors.left: parent.left
+                        }
+                        Text {
+                            anchors.top: parent.top;
+                            anchors.left: img.right
+                            anchors.margins: 10
+                            clip: true
+                            wrapMode: Text.Wrap
+                            width: parent.width - img.width
+                            height: img.height
+                            id: title
+                            text: model.title;
+                            font.pointSize: 20
+                        }
+                        Text {
+                            anchors.top: title.bottom
+                            anchors.right: parent.right;
+                            clip: true
+                            wrapMode: Text.Wrap
+                            anchors.margins: 10
+                            text: "By " + model.author + " on r/" + model.subreddit
+                        }
+
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            redditPostListView.currentIndex = index;
+                        }
                     }
                     highlight: Rectangle {
                         color: "lightsteelblue"
@@ -98,7 +137,7 @@ ApplicationWindow {
                 title: "Move"
 
                 DropArea {
-                  /*  RadialGradient {
+                    /*  RadialGradient {
                         width: 500
                         height: 500
                         clip: true
@@ -135,32 +174,32 @@ ApplicationWindow {
 
                             gradient: Gradient {
                                 GradientStop {
-                                 position: 0.000
-                                 color: Qt.rgba(1, 0, 0, 1)
+                                    position: 0.000
+                                    color: Qt.rgba(1, 0, 0, 1)
                                 }
                                 GradientStop {
-                                 position: 0.167
-                                 color: Qt.rgba(1, 1, 0, 1)
+                                    position: 0.167
+                                    color: Qt.rgba(1, 1, 0, 1)
                                 }
                                 GradientStop {
-                                 position: 0.333
-                                 color: Qt.rgba(0, 1, 0, 1)
+                                    position: 0.333
+                                    color: Qt.rgba(0, 1, 0, 1)
                                 }
                                 GradientStop {
-                                 position: 0.500
-                                 color: Qt.rgba(0, 1, 1, 1)
-                                 }
-                                GradientStop {
-                                 position: 0.667
-                                 color: Qt.rgba(0, 0, 1, 1)
+                                    position: 0.500
+                                    color: Qt.rgba(0, 1, 1, 1)
                                 }
                                 GradientStop {
-                                 position: 0.833
-                                 color: Qt.rgba(1, 0, 1, 1)
+                                    position: 0.667
+                                    color: Qt.rgba(0, 0, 1, 1)
                                 }
                                 GradientStop {
-                                 position: 1.000
-                                 color: Qt.rgba(1, 0, 0, 1)
+                                    position: 0.833
+                                    color: Qt.rgba(1, 0, 1, 1)
+                                }
+                                GradientStop {
+                                    position: 1.000
+                                    color: Qt.rgba(1, 0, 0, 1)
                                 }
                             }
                         }

@@ -1,13 +1,16 @@
 TEMPLATE = app
 
-QT += qml quick widgets
+QT += qml quick widgets \
+    network \
+    script
 
 CONFIG += c++11
 
 SOURCES += main.cpp \
     redditpostmodel.cpp \
     randomstringmodel.cpp \
-    gui.cpp
+    gui.cpp \
+    redditpost.cpp
 
 RESOURCES += qml.qrc
 
@@ -25,4 +28,5 @@ DISTFILES += \
 HEADERS += \
     redditpostmodel.h \
     randomstringmodel.h \
-    gui.h
+    gui.h \
+    redditpost.h
