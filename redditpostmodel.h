@@ -12,6 +12,8 @@
 #include <QJsonValue>
 #include <redditpost.h>
 #include <QHash>
+#include <QFile>
+#include <QColor>
 
 class RedditPostModel : public QAbstractListModel
 {
@@ -24,6 +26,7 @@ public:
         ImageUrl = Qt::UserRole + 3,
         Subreddit = Qt::UserRole + 4,
         Upvotes = Qt::UserRole + 5,
+        Color = Qt::UserRole + 6
     };
 
     explicit RedditPostModel(QObject *parent = 0);
@@ -50,9 +53,13 @@ signals:
 private slots:
     void getResponse(QNetworkReply *repl);
 private:
+    void populateList();
+    void populateList(QJsonDocument);
     QNetworkAccessManager* conManager;
     QList<RedditPost> m_data;
     QHash<int, QByteArray> m_roleNames;
+    QHash<QString, std::pair<int, RedditPost>> position;
+    QJsonDocument doc;
 };
 
 #endif // REDDITPOSTMODEL_H

@@ -30,8 +30,10 @@ ApplicationWindow {
                 anchors.margins: 10
                 ListView {
                     id: redditPostListView
+                    currentIndex: -1
                     model: RedditPostModel {}
                     delegate: Rectangle {
+                        color: model.color;
                         width: parent.width;
                         height: width / 4 + upvotes.height + 20
                         property real imgheight: width / 4
